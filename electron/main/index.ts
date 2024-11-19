@@ -133,12 +133,3 @@ ipcMain.handle("open-win", (_, arg) => {
     childWindow.loadFile(indexHtml, { hash: arg });
   }
 });
-
-// IPC 处理：响应渲染进程的复制文本请求
-ipcMain.on("copy-text", (_, text) => {
-  try {
-    clipboard.writeText(text);
-  } catch (error) {
-    console.error("写入剪贴板错误:", error);
-  }
-});

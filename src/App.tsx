@@ -14,10 +14,19 @@ function App() {
           <div
             key={item.id}
             className="clipboard-item"
-            onClick={() => copyToClipboard(item.content)}
+            onClick={() => copyToClipboard(item)}
           >
-            <div className="content">{item.content}</div>
-            <div className="hover-tip">点击复制</div>
+            {item.type === "text" && <div className="text">{item.content}</div>}
+            {item.type === "image" && (
+              <img className="img" src={item.imageData} alt="Clipboard" />
+            )}
+            {item.type === "file" && (
+              <div className="file-list">
+                {item.filePaths?.map((path) => (
+                  <div key={path}>{path}</div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>

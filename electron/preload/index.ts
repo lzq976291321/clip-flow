@@ -1,7 +1,7 @@
-import { ipcRenderer, contextBridge } from "electron";
+import { ipcRenderer, contextBridge, clipboard } from "electron";
 
 // 定义类型
-type Callback = (text: string) => void;
+type Callback = (data: Omit<ClipboardItem, "id" | "timestamp">) => void;
 const callbacks = new Set<Callback>();
 
 // --------- Expose some API to the Renderer process ---------
@@ -24,9 +24,6 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     const [channel, ...omit] = args;
     return ipcRenderer.invoke(channel, ...omit);
   },
-
-  // You can expose other APTs you need here.
-  // ...
 });
 
 // 暴露给渲染进程的 API
@@ -35,14 +32,26 @@ contextBridge.exposeInMainWorld("clipboardManager", {
     callbacks.add(callback);
     return () => callbacks.delete(callback);
   },
+
   copyText(text: string) {
     ipcRenderer.send("copy-text", text);
   },
+
+  copyImage(imageData: string) {
+    ipcRenderer.send("copy-image", imageData);
+  },
+
+  copyFiles(filePaths: string[]) {
+    ipcRenderer.send("copy-files", filePaths);
+  },
 });
 
-// 创建一个本地的事件处理器
-ipcRenderer.on("clipboard-update", (_, text: string) => {
-  callbacks.forEach((callback) => callback(text));
+// 监听主进程发来的剪贴板变化通知
+ipcRenderer.on("clipboard-changed", (_, data) => {
+  if (!data) return;
+
+  // 直接将主进程传来的剪贴板数据通知给所有回调
+  callbacks.forEach((callback) => callback(data));
 });
 
 // --------- Preload scripts loading ---------

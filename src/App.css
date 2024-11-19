@@ -1,6 +1,7 @@
 .app {
-  height: 100vh;
   transition: all 0.2s ease;
+  height: 100vh;
+  width: 440px;
 }
 
 .app.light {
@@ -73,32 +74,15 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.clipboard-item .content {
+.clipboard-item .text {
   font-size: 14px;
   line-height: 1.5;
   word-break: break-all;
   white-space: pre-wrap;
 }
 
-.clipboard-item .hover-tip {
-  position: absolute;
-  right: 12px;
-  bottom: 8px;
-  font-size: 12px;
-  opacity: 0;
-  transform: translateY(4px);
-  transition: all 0.2s ease;
-}
-
-.light .clipboard-item .hover-tip {
-  color: #666;
-}
-
-.dark .clipboard-item .hover-tip {
-  color: #aaa;
-}
-
-.clipboard-item:hover .hover-tip {
-  opacity: 1;
-  transform: translateY(0);
+.clipboard-item .img {
+  width: auto;
+  height: 80px;
+  object-fit: contain;
 }
